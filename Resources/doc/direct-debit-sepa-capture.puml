@@ -1,0 +1,67 @@
+@startuml
+title Capture Direct Debit SEPA Payment
+
+participant Client
+participant Shop
+participant PAYONE
+
+activate Client
+
+Client -> Shop: POST prepare.php
+activate Shop
+Shop --> Client: 302 capture.php
+deactivate Shop
+
+Client -> Shop: GET capture.php
+activate Shop
+
+Shop -> PAYONE: POST request=managemandate
+activate PAYONE
+
+alt mandate_status=pending
+PAYONE --> Shop: status=APPROVED mandate_status=pending
+
+Shop --> Client: 200 Mandate Confirmation Form
+Client -> Shop: POST capture.php
+
+else mandate_status=active
+PAYONE --> Shop: status=APPROVED mandate_status=active
+end
+deactivate PAYONE
+
+Shop -> PAYONE: POST request=authorization
+activate PAYONE
+PAYONE --> Shop: 200 status=APPROVED
+
+deactivate PAYONE
+
+Shop -> Shop: Set Payment Status to "pending"
+
+Shop -> Client: 302 done.php
+deactivate Shop
+
+Client -> Shop: GET done.php
+activate Shop
+Shop --> Client: 200 Thanks
+deactivate Shop
+deactivate Client
+
+...some time later...
+
+PAYONE -> Shop: POST notify.php txaction=appointed transaction_status=completed
+activate PAYONE
+activate Shop
+Shop -> Shop: Set Payment Status to "captured"
+Shop --> PAYONE: 200 TSOK
+deactivate Shop
+deactivate PAYONE
+
+...some time later...
+
+PAYONE -> Shop: POST notify.php txaction=paid
+activate PAYONE
+activate Shop
+Shop --> PAYONE: 200 TSOK
+deactivate Shop
+deactivate PAYONE
+@enduml

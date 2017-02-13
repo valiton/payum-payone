@@ -1,0 +1,7 @@
+{{ model.mandate_text|raw }}
+
+<form method="post" action="{{ actionUrl }}">
+    <input type="hidden" name="mandate_identification" value="{{ model.mandate_identification }}"/>
+
+    <button type="submit">Submit Payment</button>
+</form>

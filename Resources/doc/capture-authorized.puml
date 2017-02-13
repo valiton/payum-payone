@@ -1,0 +1,24 @@
+@startuml
+title Capture Authorized Payment
+
+participant Shop
+participant PAYONE
+
+activate Shop
+
+Shop -> PAYONE: POST request=capture
+activate PAYONE
+PAYONE --> Shop: 200 status=APPROVED
+deactivate PAYONE
+Shop -> Shop: Set Payment Status to "captured"
+
+...some time later...
+
+PAYONE -> Shop: POST notify.php txaction=capture
+activate PAYONE
+Shop --> PAYONE: 200 TSOK
+deactivate PAYONE
+
+deactivate Shop
+
+@enduml

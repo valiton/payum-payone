@@ -1,0 +1,29 @@
+{
+    "name": "valiton/payum-payone",
+    "description": "The Payum extension. It provides PAYONE payment integration.",
+    "keywords": ["payum", "payone", "payment", "psp"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Valiton GmbH",
+            "homepage": "https://www.valiton.com/"
+        }
+    ],
+    "require": {
+        "php": "^5.5.0|^7.0",
+        "payum/core": "^1.2",
+        "psr/log": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Valiton\\Payum\\Payone\\": ""
+        }
+    },
+    "scripts": {
+        "lint": "find . -name vendor -prune -o -name \"*.php\" -print0 | xargs -0 -n1 -P8 php -l",
+        "test": "./vendor/bin/phpunit"
+    }
+}

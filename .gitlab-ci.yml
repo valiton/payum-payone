@@ -1,0 +1,26 @@
+cache:
+  paths:
+  - vendor/
+
+before_script:
+- apt-get update
+- apt-get install -y zlib1g-dev
+- docker-php-ext-install zip
+- curl -sS https://getcomposer.org/installer | php
+- php composer.phar install --prefer-dist --no-progress --no-interaction
+
+test:5.5:
+  image: php:5.5
+  script:
+  - php composer.phar test
+
+test:5.6:
+  image: php:5.6
+  script:
+  - php composer.phar test
+
+test:7.0:
+  image: php:7.0
+  script:
+  - php composer.phar test
+

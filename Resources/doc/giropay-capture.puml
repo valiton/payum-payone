@@ -1,0 +1,61 @@
+@startuml
+title Capture Giropay Payment
+
+participant Client
+participant Shop
+participant PAYONE
+participant Giropay
+
+activate Client
+
+Client -> Shop: POST prepare.php
+activate Shop
+Shop --> Client: 302 capture.php
+deactivate Shop
+
+Client -> Shop: GET capture.php
+activate Shop
+
+Shop -> PAYONE: POST request=authorization
+activate PAYONE
+PAYONE --> Shop: 200 status=REDIRECT redirecturl=https://...
+
+deactivate PAYONE
+
+Shop -> Shop: Set Payment Status to "pending"
+
+Shop -> Client: 302 Redirect to Redirect URL
+deactivate Shop
+
+Client -> Giropay
+activate Giropay
+
+Giropay -> PAYONE
+activate PAYONE
+PAYONE -> Shop: POST notify.php txaction=appointed transaction_status=completed
+activate Shop
+Shop -> Shop: Set Payment Status to "captured"
+Shop --> PAYONE: 200 TSOK
+deactivate Shop
+PAYONE --> Giropay
+deactivate PAYONE
+
+Giropay --> Client: 302 done.php
+deactivate Giropay
+
+Client -> Shop: GET done.php
+activate Shop
+Shop --> Client: 200 Thanks
+deactivate Shop
+deactivate Client
+
+...some time later...
+
+PAYONE -> Shop: POST notify.php txaction=paid
+activate PAYONE
+activate Shop
+Shop --> PAYONE: 200 TSOK
+deactivate PAYONE
+deactivate Shop
+
+@enduml

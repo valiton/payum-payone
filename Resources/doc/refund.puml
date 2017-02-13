@@ -1,0 +1,24 @@
+@startuml
+title Refund Captured Payment
+
+participant Shop
+participant PAYONE
+
+activate Shop
+
+Shop -> PAYONE: POST request=refund
+activate PAYONE
+PAYONE --> Shop: 200 status=APPROVED
+deactivate PAYONE
+Shop -> Shop: Set Payment Status to "refunded"
+
+...some time later...
+
+PAYONE -> Shop: POST notify.php txaction=refund
+activate PAYONE
+Shop --> PAYONE: 200 TSOK
+deactivate PAYONE
+
+deactivate Shop
+
+@enduml

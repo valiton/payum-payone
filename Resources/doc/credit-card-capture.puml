@@ -1,0 +1,85 @@
+@startuml
+title Capture Credit Card Payment
+
+participant Client
+participant Shop
+participant PAYONE
+
+activate Client
+
+Client -> Shop: POST prepare.php
+activate Shop
+Shop --> Client: 302 capture.php
+deactivate Shop
+
+Client -> Shop: GET capture.php
+activate Shop
+
+alt No Pseudo Card PAN present
+Shop --> Client: 200 Credit Card Form
+deactivate Shop
+
+Client -> PAYONE: POST Card PAN
+activate PAYONE
+
+PAYONE --> Client: 200 Pseudo Card PAN
+
+deactivate PAYONE
+
+Client -> Shop: POST capture.php
+activate Shop
+end
+
+Shop -> PAYONE: POST request=authorization
+activate PAYONE
+alt With 3-D Secure
+    PAYONE --> Shop: 302 3-D Secure Form
+    deactivate PAYONE
+    Shop --> Client: 302 3-D Secure Form
+    deactivate Shop
+    Client -> PAYONE: POST 3-D Secure Password
+    activate PAYONE
+    PAYONE -> Shop: POST notify.php txaction=appointed
+    activate Shop
+    Shop -> Shop: Set Payment Status to "captured"
+    Shop --> PAYONE: 200 TSOK
+    deactivate Shop
+
+    PAYONE --> Client: 302 done.php
+else No 3-D Secure
+    PAYONE --> Shop: 200 status=APPROVED
+    deactivate PAYONE
+    activate Shop
+
+    Shop -> Shop: Set Payment Status to "pending"
+    Shop --> Client: 302 done.php
+    deactivate Shop
+end
+
+Client -> Shop: GET done.php
+activate Shop
+Shop --> Client: 200 Thanks
+deactivate Shop
+deactivate Client
+
+alt No 3-D Secure
+    ...some time later...
+
+    PAYONE -> Shop: POST notify.php txaction=appointed transaction_status=completed
+    activate PAYONE
+    activate Shop
+    Shop -> Shop: Set Payment Status to "captured"
+    Shop --> PAYONE: 200 TSOK
+    deactivate Shop
+    deactivate PAYONE
+end
+
+...some time later...
+
+PAYONE -> Shop: POST notify.php txaction=paid
+activate PAYONE
+activate Shop
+Shop --> PAYONE: 200 TSOK
+deactivate Shop
+deactivate PAYONE
+@enduml

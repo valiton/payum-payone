@@ -1,0 +1,7 @@
+{$model.mandate_text nofilter}
+
+<form method="post" action="{$actionUr}">
+    <input type="hidden" name="mandate_identification" value="{$model.mandate_identification}"/>
+
+    <button type="submit" class="button">Submit Payment</button>
+</form>

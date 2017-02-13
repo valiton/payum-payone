@@ -1,0 +1,26 @@
+@startuml
+state captured
+state authorized
+state refunded
+state unknown
+state failed
+state suspended
+state expired
+state pending
+state canceled
+state new
+
+[*] --> new
+new --> pending
+pending --> authorized: Payum: authorize\nPayone: preauthorize
+pending --> captured: Payum: capture\nPayone: authorize
+authorized --> captured: Payum: capture\nPayone: capture
+authorized --> canceled
+captured --> refunded
+pending --> failed
+pending --> canceled
+
+canceled --> [*]
+failed --> [*]
+refunded --> [*]
+@enduml
