@@ -5,6 +5,10 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Sven Sanzenbacher",
+            "email": "sven.sanzenbacher@valiton.com",
+        },
+        {
             "name": "Valiton GmbH",
             "homepage": "https://www.valiton.com/"
         }
