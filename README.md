@@ -83,7 +83,21 @@ Now you can retrieve the gateway from the `payum` service
 $gateway = $this->get('payum')->getGeteway('payone');
 ```
 
-##License
+### Transaction Status URL (Merchant Backend)
+
+In the PAYONE Merchant Interface (PMI) a **TransactionStatus URL** have to be defined. That transaction URL have to be a non-dynamic notify URL.
+The Payum Bundle for symfony provides therefor a route `payum_notify_do_unsafe`. That takes a static parameter `gateway` instead of a dynamic token.
+
+    .../payment/notify/unsafe/{gateway}
+
+For PAYONE the gateway would be `payone`.
+
+    .../payment/notify/unsafe/payone
+
+Add this URL as the **TransactionStatus URL** to the PMI.
+
+
+## License
 
 The MIT License (MIT)
 
