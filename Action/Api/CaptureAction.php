@@ -48,6 +48,14 @@ class CaptureAction extends BaseApiAwareAction
         }
 
         if (Api::STATUS_ERROR === $response[Api::FIELD_STATUS]) {
+            if (array_key_exists(Api::FIELD_PAYMENT_METHOD, $model)) {
+                if ($this->isGiropayError1087($model, $response)) {
+                    $response[Api::FIELD_ERROR_CODE]       = 885;
+                    $response[Api::FIELD_ERROR_MESSAGE]    = 'Bank is not supported by giropay';
+                    $response[Api::FIELD_CUSTOMER_MESSAGE] = 'Bank is not supported by giropay';
+                }
+            }
+
             $model[Api::FIELD_CUSTOMER_MESSAGE] = $response[Api::FIELD_CUSTOMER_MESSAGE];
             $model[Api::FIELD_ERROR_CODE] = $response[Api::FIELD_ERROR_CODE];
             $model[Api::FIELD_ERROR_MESSAGE] = $response[Api::FIELD_ERROR_MESSAGE];
@@ -67,5 +75,17 @@ class CaptureAction extends BaseApiAwareAction
             $request instanceof Capture &&
             $request->getModel() instanceof \ArrayAccess
         ;
+    }
+
+    /**
+     * @param $model
+     * @param $response
+     *
+     * @return bool
+     */
+    protected function isGiropayError1087($model, $response)
+    {
+        return $model[Api::FIELD_PAYMENT_METHOD] == Api::PAYMENT_METHOD_GIROPAY
+               && (int)$response[Api::FIELD_ERROR_CODE] == 1087;
     }
 }
