@@ -13,16 +13,24 @@ namespace Valiton\Payum\Payone\Action\Api;
 
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\RequestNotSupportedException;
+use Payum\Core\GatewayAwareInterface;
+use Payum\Core\GatewayInterface;
 use Valiton\Payum\Payone\Api;
 use Valiton\Payum\Payone\Request\Api\Capture;
+use Valiton\Payum\Payone\Request\Api\ConvertGiropayErrors;
 
 /**
  * Capture Action
  *
  * @author     David Fuhr
  */
-class CaptureAction extends BaseApiAwareAction
+class CaptureAction extends BaseApiAwareAction implements GatewayAwareInterface
 {
+    /**
+     * @var GatewayInterface
+     */
+    protected $gateway;
+
     /**
      * @param mixed $request
      *
@@ -48,13 +56,7 @@ class CaptureAction extends BaseApiAwareAction
         }
 
         if (Api::STATUS_ERROR === $response[Api::FIELD_STATUS]) {
-            if (array_key_exists(Api::FIELD_PAYMENT_METHOD, $model)) {
-                if ($this->isGiropayError1087($model, $response)) {
-                    $response[Api::FIELD_ERROR_CODE]       = 885;
-                    $response[Api::FIELD_ERROR_MESSAGE]    = 'Bank is not supported by giropay';
-                    $response[Api::FIELD_CUSTOMER_MESSAGE] = 'Bank is not supported by giropay';
-                }
-            }
+            $this->gateway->execute(new ConvertGiropayErrors($model, $response));
 
             $model[Api::FIELD_CUSTOMER_MESSAGE] = $response[Api::FIELD_CUSTOMER_MESSAGE];
             $model[Api::FIELD_ERROR_CODE] = $response[Api::FIELD_ERROR_CODE];
@@ -78,14 +80,10 @@ class CaptureAction extends BaseApiAwareAction
     }
 
     /**
-     * @param $model
-     * @param $response
-     *
-     * @return bool
+     * @param \Payum\Core\GatewayInterface $gateway
      */
-    protected function isGiropayError1087($model, $response)
+    public function setGateway(GatewayInterface $gateway)
     {
-        return $model[Api::FIELD_PAYMENT_METHOD] == Api::PAYMENT_METHOD_GIROPAY
-               && (int)$response[Api::FIELD_ERROR_CODE] == 1087;
+        $this->gateway = $gateway;
     }
 }

@@ -57,6 +57,8 @@ class PayoneGatewayFactory extends GatewayFactory
             },
             'payum.action.api.refund' => new Action\Api\RefundAction(),
 
+            'payum.action.api.convert_giropay_errors' => new Action\Api\ConvertGiropayErrorsAction(),
+
             'payum.extension.invalidate_notify_token' => function (ArrayObject $config) {
                 return new InvalidateNotifyTokenExtension($config['payum.security.token_storage']);
             }
