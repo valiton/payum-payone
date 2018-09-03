@@ -14,8 +14,11 @@ namespace Valiton\Payum\Payone\Action\Api;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Exception\LogicException;
 use Payum\Core\Exception\RequestNotSupportedException;
+use Payum\Core\GatewayAwareInterface;
+use Payum\Core\GatewayInterface;
 use Payum\Core\Reply\HttpRedirect;
 use Valiton\Payum\Payone\Api;
+use Valiton\Payum\Payone\Request\Api\ConvertGiropayErrors;
 use Valiton\Payum\Payone\Request\Api\PreAuthorize;
 
 /**
@@ -23,8 +26,13 @@ use Valiton\Payum\Payone\Request\Api\PreAuthorize;
  *
  * @author     David Fuhr
  */
-class PreAuthorizeAction extends BaseApiAwareAction
+class PreAuthorizeAction extends BaseApiAwareAction implements GatewayAwareInterface
 {
+    /**
+     * @var GatewayInterface
+     */
+    protected $gateway;
+
     /**
      * @param PreAuthorize $request
      *
@@ -48,6 +56,8 @@ class PreAuthorizeAction extends BaseApiAwareAction
         }
 
         if (Api::STATUS_ERROR === $response[Api::FIELD_STATUS]) {
+            $this->gateway->execute(new ConvertGiropayErrors($model, $response));
+
             $previousStatus = $model[Api::FIELD_STATUS];
             $model[Api::FIELD_STATUS] = 'failed';
             $model[Api::FIELD_CUSTOMER_MESSAGE] = $response[Api::FIELD_CUSTOMER_MESSAGE];
@@ -85,5 +95,13 @@ class PreAuthorizeAction extends BaseApiAwareAction
         return
             $request instanceof PreAuthorize &&
             $request->getModel() instanceof \ArrayAccess;
+    }
+
+    /**
+     * @param \Payum\Core\GatewayInterface $gateway
+     */
+    public function setGateway(GatewayInterface $gateway)
+    {
+        $this->gateway = $gateway;
     }
 }
