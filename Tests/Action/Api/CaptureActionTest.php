@@ -30,7 +30,7 @@ class CaptureActionTest extends AbstractActionTest
                         ->disableOriginalConstructor()
                         ->getMock()
         ;
-        $gateway = $this->getMock(GatewayInterface::class);
+        $gateway = $this->createMock(GatewayInterface::class);
 
         $api
             ->expects($this->once())

@@ -15,12 +15,12 @@ abstract class AbstractActionTest extends GenericActionTest
      */
     protected $api;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
 
         if ($this->action instanceof LoggerAwareInterface) {
-            $this->action->setLogger($this->getMock(LoggerInterface::class));
+            $this->action->setLogger($this->createMock(LoggerInterface::class));
         }
 
         if ($this->action instanceof ApiAwareInterface) {

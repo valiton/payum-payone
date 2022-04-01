@@ -18,32 +18,30 @@ class NotifyActionTest extends AbstractActionTest
 
     protected $requestClass = Notify::class;
 
-    public function provideSupportedRequests()
+    public function provideSupportedRequests(): \Iterator
     {
-        return [
-            [new $this->requestClass(new ArrayObject([]))],
-        ];
+        yield [new $this->requestClass(new ArrayObject([]))];
+
     }
 
-    public function provideNotSupportedRequests()
+    public function provideNotSupportedRequests(): \Iterator
     {
-        return array(
-            [new $this->requestClass(null)],
-            array('foo'),
-            array(array('foo')),
-            array(new \stdClass()),
-            array($this->getMockForAbstractClass(Generic::class, array(array()))),
-            array(new $this->requestClass(new \stdClass(), 'array')),
-        );
+        yield [new $this->requestClass(null)];
+        yield array('foo');
+        yield array(array('foo'));
+        yield array(new \stdClass());
+        yield array($this->getMockForAbstractClass(Generic::class, array(array())));
+        yield array(new $this->requestClass(new \stdClass(), 'array'));
     }
 
     /**
      * @test
-     * @expectedException \Payum\Core\Reply\HttpResponse
+     *
      */
     public function shouldThrowExceptionIfTransactionStatusParamIsMissing()
     {
-        $gateway = $this->getMock(GatewayInterface::class);
+        $this->expectException(\Payum\Core\Reply\HttpResponse::class);
+        $gateway = $this->createMock(GatewayInterface::class);
 
         $this->action->setGateway($gateway);
         $this->action->execute(new Notify(new ArrayObject([])));
@@ -54,7 +52,7 @@ class NotifyActionTest extends AbstractActionTest
      */
     public function shouldStoreTransactionStatusInModel()
     {
-        $gateway = $this->getMock(GatewayInterface::class);
+        $gateway = $this->createMock(GatewayInterface::class);
         $gateway->expects($this->atLeastOnce())
             ->method('execute')
             ->willReturnCallback(function($request) {
@@ -85,7 +83,7 @@ class NotifyActionTest extends AbstractActionTest
 
     public function testRefundedPaymentDoesNotChangeBackToCaptured()
     {
-        $gateway = $this->getMock(GatewayInterface::class);
+        $gateway = $this->createMock(GatewayInterface::class);
         $gateway->expects($this->any())
             ->method('execute')
             ->willReturnCallback(function($request) {
@@ -118,7 +116,7 @@ class NotifyActionTest extends AbstractActionTest
 
     public function testStatusIsCapturedAfterTxActionCapture()
     {
-        $gateway = $this->getMock(GatewayInterface::class);
+        $gateway = $this->createMock(GatewayInterface::class);
         $gateway->expects($this->any())
             ->method('execute')
             ->willReturnCallback(function($request) {
@@ -151,7 +149,7 @@ class NotifyActionTest extends AbstractActionTest
 
     public function testTxActionAppointedIsProcessEvenWithoutTransactionStatus()
     {
-        $gateway = $this->getMock(GatewayInterface::class);
+        $gateway = $this->createMock(GatewayInterface::class);
         $gateway->expects($this->any())
             ->method('execute')
             ->willReturnCallback(function($request) {

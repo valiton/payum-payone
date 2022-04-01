@@ -5,17 +5,19 @@ namespace Valiton\Payum\Payone\Tests\Extension;
 use Payum\Core\Extension\Context;
 use Payum\Core\Request\Notify;
 use Payum\Core\Storage\StorageInterface;
+use PHPUnit\Framework\TestCase;
 use Valiton\Payum\Payone\Action\NotifyAction;
 use Valiton\Payum\Payone\Api;
 use Valiton\Payum\Payone\Extension\InvalidateNotifyTokenExtension;
 
-class InvalidateNotifyTokenExtensionTest extends \PHPUnit_Framework_TestCase
+class InvalidateNotifyTokenExtensionTest extends TestCase
 {
     /**
      * @test
      */
     public function shouldNotErrorIfNoTokenStorageIsPassed()
     {
+        $this->expectNotToPerformAssertions();
         $context = $this->getMockBuilder(Context::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -46,7 +48,7 @@ class InvalidateNotifyTokenExtensionTest extends \PHPUnit_Framework_TestCase
                 'completed_status' => 'completed',
             ]));
 
-        $storage = $this->getMock(StorageInterface::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->expects($this->once())
             ->method('delete');
 
@@ -72,7 +74,7 @@ class InvalidateNotifyTokenExtensionTest extends \PHPUnit_Framework_TestCase
                 Api::FIELD_TRANSACTION_STATUS => 'whatever',
             ]));
 
-        $storage = $this->getMock(StorageInterface::class);
+        $storage = $this->createMock(StorageInterface::class);
         $storage->expects($this->never())
             ->method('delete');
 

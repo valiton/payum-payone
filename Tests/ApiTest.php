@@ -6,21 +6,21 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use Payum\Core\Bridge\Guzzle\HttpClient;
 use Payum\Core\HttpClientInterface;
+use Payum\Core\Tests\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Valiton\Payum\Payone\Api;
 
-class ApiTest extends \PHPUnit_Framework_TestCase
+class ApiTest extends TestCase
 {
     /**
      * @test
-     *
-     * @expectedException \Payum\Core\Exception\LogicException
-     * @expectedExceptionMessage he merchant_id, portal_id, key, sub_account_id fields are required.
      */
     public function throwIfRequiredOptionsNotSetInConstructor()
     {
+        $this->expectExceptionMessage("he merchant_id, portal_id, key, sub_account_id fields are required.");
+        $this->expectException(\Payum\Core\Exception\LogicException::class);
         new Api(array());
     }
 
@@ -41,7 +41,7 @@ customermessage=An error occured while processing this transaction (wrong parame
 
         $response = $api->preauthorize([]);
 
-        $this->assertInternalType('array', $response);
+        $this->assertIsArray($response);
         $this->assertArrayHasKey(Api::FIELD_STATUS, $response);
         $this->assertSame(Api::STATUS_ERROR, $response[Api::FIELD_STATUS]);
         $this->assertArrayHasKey(Api::FIELD_ERROR_CODE, $response);
@@ -68,7 +68,7 @@ bic=TESTTEST');
             Api::FIELD_LAST_NAME => 'Mustermann',
         ]);
 
-        $this->assertInternalType('array', $response);
+        $this->assertIsArray($response);
         $this->assertArrayHasKey(Api::FIELD_STATUS, $response);
         $this->assertSame(Api::STATUS_APPROVED, $response[Api::FIELD_STATUS]);
         $this->assertSame('DE85123456782599100003', $response[Api::FIELD_IBAN]);
@@ -134,11 +134,9 @@ bic=TESTTEST
         $api->getFile([]);
     }
 
-    /**
-     * @expectedException \Payum\Core\Exception\InvalidArgumentException
-     */
     public function testThrowsExceptionIfNarrativeTextIsLongerThan81Characters()
     {
+        $this->expectException(\Payum\Core\Exception\InvalidArgumentException::class);
         $api = $this->createApi(
             $this->createSuccessHttpClientStub()
         );
@@ -150,6 +148,7 @@ bic=TESTTEST
 
     public function testAcceptsNarrativeTextEqualTo81Characters()
     {
+        $this->expectNotToPerformAssertions();
         $api = $this->createApi(
             $this->createSuccessHttpClientStub()
         );
@@ -159,11 +158,9 @@ bic=TESTTEST
         ]);
     }
 
-    /**
-     * @expectedException \Payum\Core\Exception\InvalidArgumentException
-     */
     public function testThrowsExceptionIfNarrativeTextIsLongerThan37CharactersForPaydirekt()
     {
+        $this->expectException(\Payum\Core\Exception\InvalidArgumentException::class);
         $api = $this->createApi(
             $this->createSuccessHttpClientStub()
         );
@@ -176,6 +173,7 @@ bic=TESTTEST
 
     public function testAcceptsNarrativeTextEqualTo37CharactersForPaydirekt()
     {
+        $this->expectNotToPerformAssertions();
         $api = $this->createApi(
             $this->createSuccessHttpClientStub()
         );
@@ -210,7 +208,7 @@ bic=TESTTEST
      */
     protected function createHttpClientMock()
     {
-        return $this->getMock(HttpClientInterface::class);
+        return $this->createMock(HttpClientInterface::class);
     }
 
     /**
