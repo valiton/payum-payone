@@ -5,9 +5,10 @@ namespace Valiton\Payum\Payone\Tests;
 use Payum\Core\CoreGatewayFactory;
 use Payum\Core\GatewayFactory;
 use Payum\Core\GatewayFactoryInterface;
+use PHPUnit\Framework\TestCase;
 use Valiton\Payum\Payone\PayoneGatewayFactory;
 
-class PayoneGatewayFactoryTest extends \PHPUnit_Framework_TestCase
+class PayoneGatewayFactoryTest extends TestCase
 {
     /**
      * @test
@@ -24,6 +25,7 @@ class PayoneGatewayFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function couldBeConstructedWithoutAnyArguments()
     {
+        $this->expectNotToPerformAssertions();
         new PayoneGatewayFactory();
     }
 
@@ -42,7 +44,7 @@ class PayoneGatewayFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function shouldUseCoreGatewayFactoryPassedAsSecondArgument()
     {
-        $coreGatewayFactory = $this->getMock(GatewayFactoryInterface::class);
+        $coreGatewayFactory = $this->createMock(GatewayFactoryInterface::class);
 
         $factory = new PayoneGatewayFactory(array(), $coreGatewayFactory);
 
@@ -81,7 +83,7 @@ class PayoneGatewayFactoryTest extends \PHPUnit_Framework_TestCase
 
         $config = $factory->createConfig();
 
-        $this->assertInternalType('array', $config);
+        $this->assertIsArray($config);
         $this->assertNotEmpty($config);
     }
 
@@ -97,7 +99,7 @@ class PayoneGatewayFactoryTest extends \PHPUnit_Framework_TestCase
 
         $config = $factory->createConfig();
 
-        $this->assertInternalType('array', $config);
+        $this->assertIsArray($config);
 
         $this->assertArrayHasKey('foo', $config);
         $this->assertEquals('fooVal', $config['foo']);
@@ -115,7 +117,7 @@ class PayoneGatewayFactoryTest extends \PHPUnit_Framework_TestCase
 
         $config = $factory->createConfig();
 
-        $this->assertInternalType('array', $config);
+        $this->assertIsArray($config);
 
         $this->assertArrayHasKey('payum.default_options', $config);
         $this->assertEquals(array('sandbox' => true), $config['payum.default_options']);
@@ -130,7 +132,7 @@ class PayoneGatewayFactoryTest extends \PHPUnit_Framework_TestCase
 
         $config = $factory->createConfig();
 
-        $this->assertInternalType('array', $config);
+        $this->assertIsArray($config);
 
         $this->assertArrayHasKey('payum.factory_name', $config);
         $this->assertEquals('payone', $config['payum.factory_name']);

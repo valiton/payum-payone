@@ -25,24 +25,21 @@ class ConvertGiropayErrorsActionTest extends GenericActionTest
 
     protected $requestClass = ConvertGiropayErrors::class;
 
-    public function provideSupportedRequests()
+    public function provideSupportedRequests() : \Iterator
     {
-        return [
-            [new $this->requestClass([], new ArrayObject())],
-            [new $this->requestClass(new \ArrayObject(), new ArrayObject())],
-        ];
+        yield [new $this->requestClass([], new ArrayObject())];
+          yield  [new $this->requestClass(new \ArrayObject(), new ArrayObject())];
     }
 
-    public function provideNotSupportedRequests()
+    public function provideNotSupportedRequests(): \Iterator
     {
-        return [
-            ['foo', new ArrayObject()],
-            [['foo'], new ArrayObject()],
-            [new \stdClass(), new ArrayObject()],
-            [new $this->requestClass('foo', new ArrayObject())],
-            [new $this->requestClass(new \stdClass(), new ArrayObject())],
-            [$this->getMockForAbstractClass(Generic::class, [[]])],
-        ];
+        yield  ['foo', new ArrayObject()];
+        yield    [['foo'], new ArrayObject()];
+        yield   [new \stdClass(), new ArrayObject()];
+        yield   [new $this->requestClass('foo', new ArrayObject())];
+        yield   [new $this->requestClass(new \stdClass(), new ArrayObject())];
+        yield   [$this->getMockForAbstractClass(Generic::class, [[]])];
+
     }
 
     /**

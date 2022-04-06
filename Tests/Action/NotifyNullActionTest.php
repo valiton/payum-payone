@@ -13,31 +13,27 @@ class NotifyNullActionTest extends AbstractActionTest
 
     protected $requestClass = Notify::class;
 
-    public function provideSupportedRequests()
+    public function provideSupportedRequests(): \Iterator
     {
-        return [
-            [new $this->requestClass(null)],
-        ];
+        yield [new $this->requestClass(null)];
     }
 
-    public function provideNotSupportedRequests()
+    public function provideNotSupportedRequests(): \Iterator
     {
-        return array(
-            array('foo'),
-            array(array('foo')),
-            array(new \stdClass()),
-            array($this->getMockForAbstractClass(Generic::class, array(array()))),
-            array(new $this->requestClass(new \stdClass(), 'array')),
-        );
+        yield array('foo');
+        yield array(array('foo'));
+        yield array(new \stdClass());
+        yield array($this->getMockForAbstractClass(Generic::class, array(array())));
+        yield array(new $this->requestClass(new \stdClass(), 'array'));
     }
 
     /**
      * @test
-     * @expectedException \Payum\Core\Reply\HttpResponse
      */
     public function shouldThrowHttpErrorIfTokenParamIsMissing()
     {
-        $gateway = $this->getMock(GatewayInterface::class);
+        $this->expectException(\Payum\Core\Reply\HttpResponse::class);
+        $gateway = $this->createMock(GatewayInterface::class);
 
         $this->action->setGateway($gateway);
         $this->action->execute(new Notify(null));

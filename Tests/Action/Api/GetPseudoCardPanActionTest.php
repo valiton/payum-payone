@@ -20,7 +20,7 @@ class GetPseudoCardPanActionTest extends AbstractActionTest
 
     protected $requestClass = GetPseudoCardPan::class;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->action = new $this->actionClass('@PayumPayone/Action/get_pseudo_card_pan.html.twig', []);
 
@@ -42,32 +42,26 @@ class GetPseudoCardPanActionTest extends AbstractActionTest
         $this->assertTrue(true);
     }
 
-    public function provideSupportedRequests()
+    public function provideSupportedRequests(): \Iterator
     {
-        return [
-            [new $this->requestClass(new ArrayObject(), 'array')],
-            [new $this->requestClass($this->getMock(ArrayAccess::class), 'array')],
-            [new $this->requestClass(new ArrayObject(), 'array', $this->getMock(TokenInterface::class))],
-        ];
+        yield [new $this->requestClass(new ArrayObject(), 'array')];
+        yield [new $this->requestClass($this->createMock(ArrayAccess::class), 'array')];
+        yield [new $this->requestClass(new ArrayObject(), 'array', $this->createMock(TokenInterface::class))];
     }
 
-    public function provideNotSupportedRequests()
+    public function provideNotSupportedRequests(): \Iterator
     {
-        return array(
-            array('foo'),
-            array(array('foo')),
-            array(new \stdClass()),
-            array($this->getMockForAbstractClass(Generic::class, array(array()))),
-            array(new $this->requestClass(new \stdClass(), 'array')),
-        );
+        yield array('foo');
+        yield array(array('foo'));
+        yield array(new \stdClass());
+        yield array($this->getMockForAbstractClass(Generic::class, array(array())));
+        yield array(new $this->requestClass(new \stdClass(), 'array'));
     }
 
-    /**
-     * @expectedException \Payum\Core\Reply\HttpResponse
-     */
     public function testDoNotFailOnEmptyPostRequest()
     {
-        $gateway = $this->getMock(GatewayInterface::class);
+        $this->expectException(\Payum\Core\Reply\HttpResponse::class);
+        $gateway = $this->createMock(GatewayInterface::class);
         $gateway
             ->method('execute')
             ->willReturnCallback(function($arg) {
