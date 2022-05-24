@@ -1,6 +1,6 @@
 <?php
 
-namespace Valiton\Payum\Payone\Tests\Api\Action;
+namespace Valiton\Payum\Payone\Tests\Action\Api;
 
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\Tests\GenericActionTest;

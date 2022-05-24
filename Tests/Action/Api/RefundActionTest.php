@@ -1,6 +1,6 @@
 <?php
 
-namespace Valiton\Payum\Payone\Tests\Api\Action;
+namespace Valiton\Payum\Payone\Tests\Action\Api;
 
 use Payum\Core\Request\Refund;
 use Valiton\Payum\Payone\Action\Api\RefundAction;
