@@ -3,7 +3,7 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build-test-71:
+  build-test-72:
     runs-on: ubuntu-latest
 
     steps:
@@ -12,13 +12,13 @@ jobs:
       - uses: php-actions/composer@v6
         with:
           version: 1
-          php_version: "7.1"
+          php_version: "7.2"
 
       - name: PHPUnit Tests
         uses: php-actions/phpunit@v3
         with:
           version: 7
-          php_version: "7.1"
+          php_version: "7.2"
           configuration: phpunit.xml.dist
           bootstrap: vendor/autoload.php
   build-test-74:
