@@ -36,7 +36,7 @@ class ConvertGiropayErrorsAction implements ActionInterface
         $response = $request->getResponse();
 
         if (Api::STATUS_ERROR != $response[Api::FIELD_STATUS]
-            || !array_key_exists(Api::FIELD_PAYMENT_METHOD, $model)
+            || !$model[Api::FIELD_PAYMENT_METHOD]
             || $model[Api::FIELD_PAYMENT_METHOD] != Api::PAYMENT_METHOD_GIROPAY
         ) {
             return;

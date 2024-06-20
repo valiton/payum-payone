@@ -7,9 +7,8 @@ use GuzzleHttp\Psr7\Response;
 use Payum\Core\Bridge\Guzzle\HttpClient;
 use Payum\Core\HttpClientInterface;
 use Payum\Core\Tests\TestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Valiton\Payum\Payone\Api;
 
 class ApiTest extends TestCase
@@ -96,7 +95,7 @@ bic=TESTTEST
             Api::FIELD_LAST_NAME => 'Mustermann',
         ]);
 
-        $this->assertInternalType('array', $response);
+        $this->assertIsArray($response);
         $this->assertArrayHasKey(Api::FIELD_MANDATE_TEXT, $response);
         $this->assertStringStartsWith('<div class="mandatetext">', $response[Api::FIELD_MANDATE_TEXT]);
         $this->assertStringEndsWith('</div>', $response[Api::FIELD_MANDATE_TEXT]);
@@ -204,7 +203,7 @@ bic=TESTTEST
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|HttpClientInterface
+     * @return MockObject|HttpClientInterface
      */
     protected function createHttpClientMock()
     {
@@ -212,7 +211,7 @@ bic=TESTTEST
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|HttpClientInterface
+     * @return MockObject|HttpClientInterface
      */
     protected function createSuccessHttpClientStub($responseBody = '')
     {

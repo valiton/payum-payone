@@ -32,28 +32,6 @@ class PayoneGatewayFactoryTest extends TestCase
     /**
      * @test
      */
-    public function shouldCreateCoreGatewayFactoryIfNotPassed()
-    {
-        $factory = new PayoneGatewayFactory();
-
-        $this->assertAttributeInstanceOf(CoreGatewayFactory::class, 'coreGatewayFactory', $factory);
-    }
-
-    /**
-     * @test
-     */
-    public function shouldUseCoreGatewayFactoryPassedAsSecondArgument()
-    {
-        $coreGatewayFactory = $this->createMock(GatewayFactoryInterface::class);
-
-        $factory = new PayoneGatewayFactory(array(), $coreGatewayFactory);
-
-        $this->assertAttributeSame($coreGatewayFactory, 'coreGatewayFactory', $factory);
-    }
-
-    /**
-     * @test
-     */
     public function shouldAllowCreateGateway()
     {
         $factory = new PayoneGatewayFactory();
@@ -66,12 +44,6 @@ class PayoneGatewayFactoryTest extends TestCase
         ]);
 
         $this->assertInstanceOf('Payum\Core\Gateway', $gateway);
-
-        $this->assertAttributeNotEmpty('apis', $gateway);
-        $this->assertAttributeNotEmpty('actions', $gateway);
-
-        $extensions = $this->readAttribute($gateway, 'extensions');
-        $this->assertAttributeNotEmpty('extensions', $extensions);
     }
 
     /**
