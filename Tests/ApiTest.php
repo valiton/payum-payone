@@ -9,8 +9,6 @@ use Payum\Core\HttpClientInterface;
 use Payum\Core\Tests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 use Valiton\Payum\Payone\Api;
 
 class ApiTest extends TestCase
